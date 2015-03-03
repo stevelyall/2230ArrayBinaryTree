@@ -67,6 +67,16 @@ public class ArrayBinaryTree<T> implements BinaryTreeADT {
         return count;
     }
 
+    /**
+     * Determines whether or not an item exists in the tree. Calls find() and returns a boolean.
+     * Complexity: O(1)
+     * Precondition: An ArrayBinaryTree and Object to find have been instantiated.
+     * Postcondition: The structure is unchanged.
+     *
+     * @param targetElement the element being sought in the tree
+     *                      //     * @return true if the element exists in the tree, false otherwise
+     * @author stevelyall patmcgee
+     */
     @Override
     public boolean contains(Object targetElement) {
         try {
@@ -77,6 +87,16 @@ public class ArrayBinaryTree<T> implements BinaryTreeADT {
         }
     }
 
+    /**
+     * Attempts to locate an item in the tree.
+     *  Complexity: O(n)
+     *  Precondition: An ArrayBinaryTree and Object to find have been instantiated.
+     *  Postcondition: The structure is unchanged.
+     * @author stevelyall patmcgee
+     * @param targetElement the element to search for in the tree
+     * @throws ElementNotFoundException if the element is not found
+     * @return the element found in the array
+     */
     @Override
     public Object find(Object targetElement) {
         for (T element : array) {
@@ -87,6 +107,15 @@ public class ArrayBinaryTree<T> implements BinaryTreeADT {
         throw new ElementNotFoundException("Element not found in tree");
     }
 
+
+    /**
+     * Builds a string representation of the tree.
+     *  Complexity: O(n)
+     *  Precondition: An ArrayBinaryTree has been instantiated.
+     *  Postcondition: The structure itself is unchanged.
+     * @author patmcgee stevelyall
+     * @return a string representing the contents of the tree in level-order
+     */
     @Override
     public String toString() {
         String str = "";
