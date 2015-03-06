@@ -109,7 +109,7 @@ public class ArrayBinaryTree<T> implements BinaryTreeADT {
 
     /**
      * Determines the number of nodes in the tree.
-     *  Complexity: O(n) // TODO is this N?
+     *  Complexity: O(n)
      *  Precondition: The ArrayBinaryTree object has been instantiated.
      *  Postcondition: The structure is unchanged.
      * @return the number of nodes in the tree
@@ -164,7 +164,7 @@ public class ArrayBinaryTree<T> implements BinaryTreeADT {
                 return element;
             }
         }
-        throw new ElementNotFoundException("Element not found in tree");
+        throw new ElementNotFoundException("tree");
     }
 
 
@@ -178,6 +178,9 @@ public class ArrayBinaryTree<T> implements BinaryTreeADT {
      */
     @Override
     public String toString() {
+        if (isEmpty()) {
+            return "<Tree is empty>";
+        }
         String str = "";
         int i = 0;
         while (array[i] != null) {
