@@ -1,5 +1,7 @@
 import org.junit.Test;
 
+import java.util.Iterator;
+
 import static org.junit.Assert.assertEquals;
 
 public class ArrayBinaryTreeTest {
@@ -7,6 +9,28 @@ public class ArrayBinaryTreeTest {
     ArrayBinaryTree<String> t1 = new ArrayBinaryTree<String>("Element 1");
     ArrayBinaryTree<String> t2 = new ArrayBinaryTree<String>("Element 2");
     ArrayBinaryTree<String> t3 = new ArrayBinaryTree<String>("Element 3", t1, t2);
+
+    @Test
+    public void testLevelOrderIterator() throws Exception {
+        Iterator iter = t3.iteratorLevelOrder();
+        assertEquals(true, iter.hasNext());
+        assertEquals("Element 3", iter.next());
+        assertEquals(true, iter.hasNext());
+        assertEquals("Element 1", iter.next());
+        assertEquals(true, iter.hasNext());
+        assertEquals("Element 2", iter.next());
+        assertEquals(false, iter.hasNext());
+    }
+
+    @Test
+    public void testGetLeftChild() throws Exception {
+        assertEquals("Element 1", t3.getLeftChild(0));
+    }
+
+    @Test
+    public void testGetRightChild() throws Exception {
+        assertEquals("Element 2", t3.getRightChild(0));
+    }
 
     @Test
     public void testSizeWithEmptyTree() throws Exception {
