@@ -1,5 +1,6 @@
 import exceptions.ElementNotFoundException;
 
+import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -33,7 +34,7 @@ public class ArrayBinaryTree<T> implements BinaryTreeADT {
 
     /**
      * Constructs a new ArrayBinaryTree from an element and two subtrees.
-     *  Complexity: O(n) // TODO is this N?
+     *  Complexity: O(n)
      *  Precondition: None, other than having an element T and two ArrayBinaryTree objects instantiated.
      *  Postcondition: A new ArrayBinaryTree object has been created.
      * @author patmcgee stevelyall
@@ -80,8 +81,8 @@ public class ArrayBinaryTree<T> implements BinaryTreeADT {
      * @param i the index of the current node
      * @return the left child of the node
      */
-    public Object getLeftChild(int i) {
-        return array[2 * i + 1];
+    public int getLeftChild(int i) {
+        return 2 * i + 1;
     }
 
     /**
@@ -90,8 +91,8 @@ public class ArrayBinaryTree<T> implements BinaryTreeADT {
      * @param i the index of the current node
      * @return the right child of the node
      */
-    public Object getRightChild(int i) {
-        return array[2 * (i + 1)];
+    public int getRightChild(int i) {
+        return 2 * (i + 1);
     }
 
     /**
@@ -99,7 +100,6 @@ public class ArrayBinaryTree<T> implements BinaryTreeADT {
      *  Complexity: O(1)
      *  Precondition: The ArrayBinaryTree object has been instantiated.
      *  Postcondition: The structure is unchanged.
-     * @author stevelyall patmcgee
      * @return true if the tree is empty, false otherwise
      */
     @Override
@@ -132,7 +132,6 @@ public class ArrayBinaryTree<T> implements BinaryTreeADT {
      *  Complexity: O(1)
      *  Precondition: An ArrayBinaryTree and Object to find have been instantiated.
      *  Postcondition: The structure is unchanged.
-     * @author stevelyall patmcgee
      * @param targetElement the element being sought in the tree
      * @return true if the element exists in the tree, false otherwise
      *
@@ -152,7 +151,6 @@ public class ArrayBinaryTree<T> implements BinaryTreeADT {
      *  Complexity: O(n)
      *  Precondition: An ArrayBinaryTree and Object to find have been instantiated.
      *  Postcondition: The structure is unchanged.
-     * @author stevelyall patmcgee
      * @param targetElement the element to search for in the tree
      * @throws ElementNotFoundException if the element is not found
      * @return the element found in the array
@@ -190,6 +188,7 @@ public class ArrayBinaryTree<T> implements BinaryTreeADT {
         return str;
     }
 
+
     /**
      * Returns an iterator for the current tree.
      * @return a new iterator
@@ -202,65 +201,55 @@ public class ArrayBinaryTree<T> implements BinaryTreeADT {
 
     @Override
     public Iterator iteratorInOrder() {
-        return new ArrayBinaryTreeIterator() {
-
-            @Override
-            public T next() {
-                // TODO inorder
-                return super.next();
-            }
-        };
+        return new ArrayBinaryTreeIteratorInorder();
     }
+
 
     @Override
     public Iterator iteratorPreOrder() {
-        return new ArrayBinaryTreeIterator() {
-
-            @Override
-            public T next() {
-                // TODO preorder
-                return super.next();
-            }
-        };
+        return new ArrayBinaryTreeIteratorPreorder();
     }
 
     @Override
     public Iterator iteratorPostOrder() {
-        return new ArrayBinaryTreeIterator() {
-
-            @Override
-            public T next() {
-                // TODO postorder
-                if (hasNext()) {
-                    return null;
-                } else {
-
-                }
-                return null;
-            }
-        };
+        return new ArrayBinaryTreeIteratorPostorder();
     }
 
     @Override
     public Iterator iteratorLevelOrder() {
-        return new ArrayBinaryTreeIterator() {
-            @Override
-            public T next() {
-                if (hasNext()) {
-                    return (array[currentIndex++]);
-                } else {
-                    throw new NoSuchElementException();
-                }
-            }
-        };
+        return new ArrayBinaryTreeIteratorLevelOrder();
     }
 
-    class ArrayBinaryTreeIterator implements Iterator {
+    abstract class ArrayBinaryTreeIterator implements Iterator {
         protected int iteratorModCount;
         protected int currentIndex = 0;
 
         public ArrayBinaryTreeIterator() {
             iteratorModCount = modCount;
+
+        }
+
+        @Override
+        public boolean hasNext() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public T next() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void remove() {
+            throw new UnsupportedOperationException();
+        }
+
+    }
+
+    class ArrayBinaryTreeIteratorLevelOrder extends ArrayBinaryTreeIterator {
+
+        public ArrayBinaryTreeIteratorLevelOrder() {
+            super();
             currentIndex = root;
         }
 
@@ -274,13 +263,167 @@ public class ArrayBinaryTree<T> implements BinaryTreeADT {
 
         @Override
         public T next() {
-            throw new UnsupportedOperationException();
+            if (hasNext()) {
+                return (array[currentIndex++]);
+            } else {
+                throw new NoSuchElementException();
+            }
+        }
+    }
+
+    class ArrayBinaryTreeIteratorInorder extends ArrayBinaryTreeIterator {
+        public ArrayList<T> traversalOrder;
+
+        public ArrayBinaryTreeIteratorInorder() {
+            super();
+            traversalOrder = new ArrayList<T>();
+            traverseInorder(root);
         }
 
         @Override
-        public void remove() {
-            throw new UnsupportedOperationException();
+        public boolean hasNext() {
+            if (!(modCount == iteratorModCount)) {
+                throw new ConcurrentModificationException();
+            }
+            if (currentIndex == traversalOrder.size()) {
+                return false;
+            }
+            return (traversalOrder.get(currentIndex) != null);
         }
 
+        @Override
+        public T next() {
+            if (hasNext()) {
+                return traversalOrder.get(currentIndex++);
+            } else {
+                throw new NoSuchElementException();
+            }
+        }
+
+        /**
+         * Performs an inorder traversal recursively.
+         *
+         * @param i root index
+         */
+        public void traverseInorder(int i) {
+            // go left
+            if (array[getLeftChild(i)] != null) {
+                traverseInorder(getLeftChild(i));
+            }
+            // parent
+            if (array[i] != null) {
+                traversalOrder.add(array[i]);
+            }
+            // go right
+            if (array[getRightChild(i)] != null) {
+                traverseInorder(getRightChild(i));
+            }
+
+        }
+    }
+
+    class ArrayBinaryTreeIteratorPreorder extends ArrayBinaryTreeIterator {
+        public ArrayList<T> traversalOrder;
+
+        public ArrayBinaryTreeIteratorPreorder() {
+            super();
+            traversalOrder = new ArrayList<T>();
+            traversePreorder(root);
+        }
+
+        @Override
+        public boolean hasNext() {
+            if (!(modCount == iteratorModCount)) {
+                throw new ConcurrentModificationException();
+            }
+            if (currentIndex == traversalOrder.size()) {
+                return false;
+            }
+            return (traversalOrder.get(currentIndex) != null);
+        }
+
+        @Override
+        public T next() {
+            if (hasNext()) {
+                return traversalOrder.get(currentIndex++);
+            } else {
+                throw new NoSuchElementException();
+            }
+        }
+
+
+        /**
+         * Performs a preorder traversal recursively
+         *
+         * @param i root index
+         */
+        public void traversePreorder(int i) {
+            // parent
+            if (array[i] != null) {
+                traversalOrder.add(array[i]);
+            }
+
+            // go left
+            if (array[getLeftChild(i)] != null) {
+                traversePreorder(getLeftChild(i));
+            }
+
+            // go right
+            if (array[getRightChild(i)] != null) {
+                traversePreorder(getRightChild(i));
+            }
+
+        }
+    }
+
+    class ArrayBinaryTreeIteratorPostorder extends ArrayBinaryTreeIterator {
+        public ArrayList<T> traversalOrder;
+
+        public ArrayBinaryTreeIteratorPostorder() {
+            super();
+            traversalOrder = new ArrayList<T>();
+            traversePostorder(root);
+        }
+
+        @Override
+        public boolean hasNext() {
+            if (!(modCount == iteratorModCount)) {
+                throw new ConcurrentModificationException();
+            }
+            if (currentIndex == traversalOrder.size()) {
+                return false;
+            }
+            return (traversalOrder.get(currentIndex) != null);
+        }
+
+        @Override
+        public T next() {
+            if (hasNext()) {
+                return traversalOrder.get(currentIndex++);
+            } else {
+                throw new NoSuchElementException();
+            }
+        }
+
+        /**
+         * Performs a postorder traversal recursively
+         *
+         * @param i root index
+         */
+        public void traversePostorder(int i) {
+            // go left
+            if (array[getLeftChild(i)] != null) {
+                traversePostorder(getLeftChild(i));
+            }
+
+            // go right
+            if (array[getRightChild(i)] != null) {
+                traversePostorder(getRightChild(i));
+            }
+            // parent
+            if (array[i] != null) {
+                traversalOrder.add(array[i]);
+            }
+        }
     }
 }

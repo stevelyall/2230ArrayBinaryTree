@@ -1,11 +1,16 @@
 import exceptions.ElementNotFoundException;
 
+import java.util.Iterator;
+
 public class ArrayBinaryTreeDriver {
 
     public static void main(String[] args) {
+        System.out.println("Creating empty tree...");
         ArrayBinaryTree<String> t0 = new ArrayBinaryTree<String>();
+        System.out.println("Creating two trees with one element...");
         ArrayBinaryTree<String> t1 = new ArrayBinaryTree<String>("Element 1");
         ArrayBinaryTree<String> t2 = new ArrayBinaryTree<String>("Element 2");
+        System.out.println("Creating new tree from two subtrees...");
         ArrayBinaryTree<String> t3 = new ArrayBinaryTree<String>("Element 3", t1, t2);
 
         // Empty tree
@@ -31,6 +36,58 @@ public class ArrayBinaryTreeDriver {
         } catch (ElementNotFoundException e) {
             System.out.println(e.getMessage());
         }
+
+        System.out.println();
+
+        //Level order iterator
+        System.out.println("Iterator for level order. Should print elements 3, 1, 2");
+        Iterator iter = t3.iteratorLevelOrder();
+        System.out.println("hasNext? " + iter.hasNext());
+        System.out.println(iter.next());
+        System.out.println("hasNext? " + iter.hasNext());
+        System.out.println(iter.next());
+        System.out.println("hasNext? " + iter.hasNext());
+        System.out.println(iter.next());
+        System.out.println("hasNext? " + iter.hasNext());
+
+        System.out.println();
+
+        //Inorder iterator
+        System.out.println("Iterator for inorder. Should print elements 1, 3, 2");
+        iter = t3.iteratorInOrder();
+        System.out.println("hasNext? " + iter.hasNext());
+        System.out.println(iter.next());
+        System.out.println("hasNext? " + iter.hasNext());
+        System.out.println(iter.next());
+        System.out.println("hasNext? " + iter.hasNext());
+        System.out.println(iter.next());
+        System.out.println("hasNext? " + iter.hasNext());
+
+        System.out.println();
+
+        //Preorder iterator
+        System.out.println("Iterator for preorder. Should print elements 3, 1, 2");
+        iter = t3.iteratorPreOrder();
+        System.out.println("hasNext? " + iter.hasNext());
+        System.out.println(iter.next());
+        System.out.println("hasNext? " + iter.hasNext());
+        System.out.println(iter.next());
+        System.out.println("hasNext? " + iter.hasNext());
+        System.out.println(iter.next());
+        System.out.println("hasNext? " + iter.hasNext());
+
+        System.out.println();
+
+        //Postorder iterator
+        System.out.println("Iterator for preorder. Should print elements 1, 2, 3");
+        iter = t3.iteratorPostOrder();
+        System.out.println("hasNext? " + iter.hasNext());
+        System.out.println(iter.next());
+        System.out.println("hasNext? " + iter.hasNext());
+        System.out.println(iter.next());
+        System.out.println("hasNext? " + iter.hasNext());
+        System.out.println(iter.next());
+        System.out.println("hasNext? " + iter.hasNext());
 
     }
 }
